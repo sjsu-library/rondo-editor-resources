@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CKE Mini Test 2</title>
+  <script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 20px; }
+    #out { border: 1px solid #ccc; padding: 8px; white-space: pre-wrap; min-height: 120px; }
+    textarea { width: 100%; height: 200px; }
+    small { color: #666; }
+  </style>
+</head>
+<body>
+  <h3>Normal Text -- HTML Output</h3>
+  <small>Updates about ~250ms after you stop typing.</small>
+  <textarea id="editor"><p>Testing.</p></textarea>
+  <pre id="out"></pre>
+
+  <script>
+    CKEDITOR.replace('editor', { allowedContent: true });
+
+    function update() {
+      var ed = CKEDITOR.instances.editor;
+      if (!ed) return;
+      document.getElementById('out').textContent = ed.getData();
+    }
+
+    function debounce(fn, ms) {
+      var t = null;
+      return function () { if (t) clearTimeout(t); t = setTimeout(fn, ms); };
+    }
+    var debouncedUpdate = debounce(update, 250);
+
+    CKEDITOR.on('instanceReady', function (ev) {
+      if (ev.editor.name === 'editor') {
+        update();                        // initial
+        ev.editor.on('change', debouncedUpdate); // debounced
+      }
+    });
+  </script>
+</body>
+</html>
