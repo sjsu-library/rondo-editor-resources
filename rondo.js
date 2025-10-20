@@ -596,6 +596,14 @@ function homeOpen() {
 
 //function to build the datatable of items
 function itemsDataTable(itemsJsonData) {
+  const hasItems = Array.isArray(itemsJsonData?.rows) &&
+                   itemsJsonData.rows.some(r => r && r.c && r.c.some(cell => cell && cell.v != null && String(cell.v).trim() !== ''));
+
+  if (!hasItems) {
+    $('#collection').hide();   // nothing to show
+  } else {
+    $('#collection').show();   // we have at least one item
+  }
   var initialSearch = {"columns": [0,1,2,3,4,7,10,11,12,13,14,15,16,17]};
 
   /* COMMENTED: preset list filters based on page/home (list display logic)
@@ -720,9 +728,10 @@ function itemsDataTable(itemsJsonData) {
       //remove loading indicator
       console.log('finished loading');
 
-      /* COMMENTED: force-show of the list section
-      $('#pages-container, #collection').show();
-      */
+      /* COMMENTED: force-show of the list section*/
+
+      // $('#pages-container, #collection').show();
+    
       $('#pages-container').show();
 
       $('main').attr('aria-busy', 'false');
